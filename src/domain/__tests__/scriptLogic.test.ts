@@ -319,6 +319,21 @@ describe('mergeCharacters', () => {
 });
 
 describe('live script breakdown', () => {
+  it('does not retain obsolete partial character cues', () => {
+    const previous = [
+      makeCharacter('char-temp', 'AG'),
+    ];
+
+    const current = [
+      makeCharacter('char-final', 'AGENT ROMEO'),
+    ];
+
+    const result = mergeCharacterCatalogs(previous, current);
+
+    expect(result.map((character) => character.canonicalName))
+      .toEqual(['AGENT ROMEO']);
+  });
+
   it('preserves canonical project character ids and links aliases in scenes', () => {
     const canonical = [makeCharacter('char-jane', 'JANE DOE', ['JANE'])];
     const merged = mergeCharacterCatalogs(canonical, [makeCharacter('found', 'JANE')]);
