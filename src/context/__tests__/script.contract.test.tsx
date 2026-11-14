@@ -198,7 +198,6 @@ describe('setScriptLines — the rest of the contract', () => {
     expect(result.current.project.setups[0].scriptMarks ?? []).toEqual([]);
   });
 });
-
 describe('setScriptLines — character discovery', () => {
   it('does not permanently save partial character cues while typing', async () => {
     const { result } = await mountProvider();
@@ -231,7 +230,7 @@ describe('setScriptLines — character discovery', () => {
       expect(result.current.project.characters).toEqual([]);
 
       // No scene should reference an unregistered character.
-      expect(result.current.project.scriptScenes[0].characterIds)
+      expect(result.current.project.scriptScenes?.[0]?.characterIds)
         .toEqual([]);
     }
 
@@ -244,12 +243,12 @@ describe('setScriptLines — character discovery', () => {
     });
 
     expect(
-      result.current.project.characters.map((c) => c.canonicalName)
+      result.current.project.characters?.map((c) => c.canonicalName)
     ).toEqual(['AGENT ROMEO']);
 
-    const characterId = result.current.project.characters[0].id;
+    const characterId = result.current.project.characters?.[0]?.id;
 
-    expect(result.current.project.scriptScenes[0].characterIds)
+    expect(result.current.project.scriptScenes?.[0]?.characterIds)
       .toEqual([characterId]);
   });
 });
