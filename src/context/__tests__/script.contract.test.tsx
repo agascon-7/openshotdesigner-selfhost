@@ -204,6 +204,10 @@ describe('setScriptLines — character discovery', () => {
   it('does not permanently save partial character cues while typing', async () => {
     const { result } = await mountProvider();
 
+    const initialCharacters = structuredClone(
+      result.current.project.characters ?? []
+    );    
+
     const scene = line({
       type: 'scene',
       text: 'INT. HEADQUARTERS - DAY',
