@@ -691,7 +691,13 @@ export const ScriptPanel: React.FC = () => {
         isSceneHeading: targetType === 'scene',
       };
     });
-    setScriptLines(updated);
+    setScriptLines(
+      updated,
+      undefined,
+      { deferCharacterDiscovery: newType === undefined && lines.some(
+        (line) => line.id === id && line.type === 'character'
+      ) }
+    );
   };
 
   const changeLineType = (id: string, type: ScriptElementType) => {
@@ -1481,7 +1487,10 @@ export const ScriptPanel: React.FC = () => {
                                   if (e.key === 'Escape') setSuggest(null);
                                   handleLineKeyDown(e, line, idx);
                                 }}
-                                onBlur={() => setSuggest(null)}
+                                onBlur={() => {
+                                  setSuggest(null);
+                                  setScriptLines(lines);
+                                }}
                                 className="w-full bg-transparent outline-none uppercase font-bold text-emerald-300 focus:bg-emerald-950/20 px-1 rounded"
                                 placeholder="CHARACTER NAME"
                               />
@@ -1493,7 +1502,13 @@ export const ScriptPanel: React.FC = () => {
                                         type="button"
                                         onMouseDown={(e) => e.preventDefault()}
                                         onClick={() => {
-                                          updateLine(line.id, c.canonicalName);
+                                          setScriptLines(
+                                            lines.map((l) =>
+                                              l.id === line.id
+                                                ? { ...l, text: c.canonicalName }
+                                                : l
+                                            )
+                                          );
                                           setSuggest(null);
                                         }}
                                         className="w-full text-left px-2 py-1 uppercase font-bold text-emerald-300 hover:bg-emerald-950/60"
