@@ -32,7 +32,9 @@ const line = (partial: Partial<ScriptLine> & { text: string }): ScriptLine =>
 /** A two-scene script, with a tagged prop on a line of the second. */
 const seed = async () => {
   const { result } = await mountProvider();
-
+  const initialCharacters = structuredClone(
+    result.current.project.characters ?? []
+  );
   const sceneOne = line({ type: 'scene', text: 'INT. KITCHEN - DAY' });
   const keptLine = line({ text: 'JENNA pours coffee.' });
   const sceneTwo = line({ type: 'scene', text: 'EXT. STREET - NIGHT' });
@@ -227,7 +229,7 @@ describe('setScriptLines — character discovery', () => {
       });
 
       // No partial character should enter the permanent catalog.
-      expect(result.current.project.characters).toEqual([]);
+      expect(result.current.project.characters).toEqual(initialCharacters);
 
       // No scene should reference an unregistered character.
       expect(result.current.project.scriptScenes?.[0]?.characterIds)
@@ -244,9 +246,16 @@ describe('setScriptLines — character discovery', () => {
 
     expect(
       result.current.project.characters?.map((c) => c.canonicalName)
-    ).toEqual(['AGENT ROMEO']);
+    ).toEqual([
+      ...initialCharacters.map((c) => c.canonicalName),
+      'AGENT ROMEO',
+    ]);
 
-    const characterId = result.current.project.characters?.[0]?.id;
+    const characterId = result.current.project.characters?.find(
+      (c) => c.canonicalName === 'AGENT ROMEO'
+    )?.id;
+
+    expect(characterId).toBeDefined(); 
 
     expect(result.current.project.scriptScenes?.[0]?.characterIds)
       .toEqual([characterId]);
