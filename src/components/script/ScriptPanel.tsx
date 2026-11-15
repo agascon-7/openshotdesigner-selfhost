@@ -1285,7 +1285,18 @@ export const ScriptPanel: React.FC = () => {
                   const val = e.target.value;
                   setRawFountainText(val);
                   const parsed = reconcileScriptLineIds(parseScreenplay(val, scriptTitle || 'Screenplay'), lines);
-                  setScriptLines(parsed, { scriptText: val });
+                  setScriptLines(
+                    parsed,
+                    { scriptText: val },
+                    { deferCharacterDiscovery: true }
+                  );
+                }}
+                onBlur={() => {
+                  const parsed = reconcileScriptLineIds(
+                    parseScreenplay(rawFountainText, scriptTitle || 'Screenplay'),
+                    lines
+                  );
+                  setScriptLines(parsed, { scriptText: rawFountainText });
                 }}
                 rows={24}
                 className={`w-full rounded-xl border p-4 text-xs font-mono leading-relaxed outline-none shadow-sm ${
